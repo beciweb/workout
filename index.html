@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Routine Generator</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 50px;
+    }
+    .exercise-card {
+      margin-bottom: 20px;
+    }
+    .exercise-card img {
+      max-height: 200px;
+      width: 100%;
+    }
+    #workoutPlan {
+      margin-top: 30px;
+    }
+    .exercise-description {
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-center">Workout Routine Generator</h1>
+
+    <!-- Goal and Experience Selection -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="goal">Select Your Goal</label>
+          <select class="form-control" id="goal">
+            <option value="weightLoss">Weight Loss</option>
+            <option value="muscleGain">Muscle Gain</option>
+            <option value="endurance">Endurance</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="experience">Select Your Experience Level</label>
+          <select class="form-control" id="experience">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Plan Button -->
+    <div class="text-center mt-4">
+      <button id="generatePlan" class="btn btn-primary">Generate Workout Plan</button>
+    </div>
+
+    <!-- Workout Plan Display -->
+    <div id="workoutPlan" class="row mt-4">
+      <!-- Dynamic content will be injected here -->
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Exercise data for each goal and experience level
+    const exercises = {
+      weightLoss: {
+        beginner: [
+          { name: "Jumping Jacks", sets: 3, reps: 20, rest: "30 sec", description: "A full-body exercise to burn calories.", image: "images/jumping.jpg" },
+          { name: "Push-ups", sets: 3, reps: 12, rest: "45 sec", description: "A bodyweight exercise to strengthen the upper body.", image: "images/pushup.jpg" },
+          { name: "Mountain Climbers", sets: 3, reps: 20, rest: "30 sec", description: "A great exercise for cardio and core strengthening.", image: "images/mountain.jpg" }
+        ],
+        intermediate: [
+          { name: "Burpees", sets: 4, reps: 15, rest: "45 sec", description: "A full-body workout to burn fat.", image: "images/burpee.jpg" },
+          { name: "Lunges", sets: 4, reps: 12, rest: "30 sec", description: "A lower-body exercise for legs and glutes.", image: "images/lunges.jpg" },
+          { name: "Plank", sets: 3, reps: "Hold for 1 min", rest: "45 sec", description: "A core exercise for stability.", image: "images/plank.jpeg" }
+        ],
+        advanced: [
+          { name: "Sprints", sets: 6, reps: "30 sec", rest: "1 min", description: "High-intensity interval sprints for fat loss.", image: "images/sprints.jpg" },
+          { name: "Squat Jumps", sets: 4, reps: 15, rest: "45 sec", description: "A plyometric exercise for explosive power.", image: "images/squatjump.png" },
+          { name: "Kettlebell Swings", sets: 4, reps: 20, rest: "45 sec", description: "A full-body exercise focusing on strength and power.", image: "images/ketllebell.jpg" }
+        ]
+      },
+      muscleGain: {
+        beginner: [
+          { name: "Bodyweight Squats", sets: 3, reps: 12, rest: "1 min", description: "Great for building leg strength.", image: "images/bodyweight.jpg" },
+          { name: "Incline Push-ups", sets: 3, reps: 10, rest: "1 min", description: "Upper body exercise targeting chest and arms.", image: "images/inclinepushup.jpg" },
+          { name: "Dumbbell Rows", sets: 3, reps: 12, rest: "1 min", description: "Back exercise for building upper body strength.", image: "images/dumbellrow.jpg" }
+        ],
+        intermediate: [
+          { name: "Barbell Squats", sets: 4, reps: 10, rest: "1.5 min", description: "Squats for building leg muscles.", image: "images/barbell.jpg" },
+          { name: "Pull-ups", sets: 4, reps: 8, rest: "1 min", description: "Upper body strength exercise for back and arms.", image: "images/pullup.jpg" },
+          { name: "Deadlifts", sets: 4, reps: 10, rest: "2 min", description: "Full-body exercise focusing on back and legs.", image: "images/deadlift.jpg" }
+        ],
+        advanced: [
+          { name: "Barbell Bench Press", sets: 5, reps: 5, rest: "2 min", description: "Strength-focused chest exercise.", image: "images/barbellbench.jpeg" },
+          { name: "Overhead Press", sets: 5, reps: 5, rest: "2 min", description: "Shoulder exercise with a focus on strength.", image: "images/overhead.jpg" },
+          { name: "Weighted Dips", sets: 4, reps: 8, rest: "1.5 min", description: "Upper body exercise for chest and triceps.", image: "images/wighteddips.jpg" }
+        ]
+      },
+      endurance: {
+        beginner: [
+          { name: "Walking Lunges", sets: 3, reps: 12, rest: "30 sec", description: "Builds endurance and leg strength.", image: "images/walking lunges.jpg" },
+          { name: "Bicycle Crunches", sets: 3, reps: 15, rest: "30 sec", description: "Core exercise for endurance.", image: "images/bikecrunches.jpg" },
+          { name: "Jump Rope", sets: 3, reps: "2 min", rest: "30 sec", description: "Great cardio for endurance.", image: "images/jumprope.jpg" }
+        ],
+        intermediate: [
+          { name: "Running", sets: 3, reps: "15 min", rest: "1 min", description: "Builds cardiovascular endurance.", image: "images/running.png" },
+          { name: "High Knees", sets: 4, reps: "30 sec", rest: "30 sec", description: "A high-intensity cardio exercise.", image: "images/highknee.jpg" },
+          { name: "Push-up to Plank", sets: 3, reps: 12, rest: "45 sec", description: "A great combination of strength and endurance.", image: "images/pushuptoplank.jpg" }
+        ],
+        advanced: [
+          { name: "Burpees", sets: 5, reps: 20, rest: "45 sec", description: "Full-body cardio exercise.", image: "images/burpee.jpg" },
+          { name: "Sprint Intervals", sets: 6, reps: "1 min", rest: "2 min", description: "HIIT for endurance.", image: "images/sprinter.jpg" },
+          { name: "Mountain Climbers", sets: 4, reps: 30, rest: "30 sec", description: "Core and cardio exercise for endurance.", image: "images/mountain.jpg" }
+        ]
+      }
+    };
+
+    // Function to generate the workout plan based on user selections
+    $("#generatePlan").click(function () {
+      const goal = $("#goal").val();
+      const experience = $("#experience").val();
+
+      // Clear any previous workout plan
+      $("#workoutPlan").empty();
+
+      // Get the workout exercises based on goal and experience level
+      const selectedExercises = exercises[goal][experience];
+
+      // Display the exercises
+      selectedExercises.forEach(function (exercise) {
+        const exerciseCard = `
+          <div class="col-md-4">
+            <div class="card exercise-card">
+              <img src="${exercise.image}" class="card-img-top" alt="${exercise.name}">
+              <div class="card-body">
+                <h5 class="card-title">${exercise.name}</h5>
+                <p class="card-text exercise-description">${exercise.description}</p>
+                <p><strong>Sets:</strong> ${exercise.sets} | <strong>Reps:</strong> ${exercise.reps} | <strong>Rest:</strong> ${exercise.rest}</p>
+              </div>
+            </div>
+          </div>
+        `;
+        $("#workoutPlan").append(exerciseCard);
+      });
+    });
+  </script>
+
+</body>
+</html>
